@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "07821432-9c71-418e-a348-968346ef1076",
+		"name": "Student Grade API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add Student",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost/StudentApi/student",
+					"protocol": "http",
+					"host": ["localhost"],
+					"path": ["StudentApi", "student"]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"StudentName\": \"John Doe\",\n    \"MidtermScore\": 85,\n    \"FinalScore\": 90\n}"
+				}
+			}
+		},
+		{
+			"name": "Retrieve All Students",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost/StudentApi/student",
+					"protocol": "http",
+					"host": ["localhost"],
+					"path": ["StudentApi", "student"]
+				}
+			}
+		},
+		{
+			"name": "Retrieve Single Student",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost/StudentApi/student/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"path": ["StudentApi", "student", "1"]
+				}
+			}
+		},
+		{
+			"name": "Update Student Scores",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost/StudentApi/student/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"path": ["StudentApi", "student", "1"]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"MidtermScore\": 88,\n    \"FinalScore\": 92\n}"
+				}
+			}
+		},
+		{
+			"name": "Delete Student",
+			"request": {
+				"method": "DELETE",
+				"url": {
+					"raw": "http://localhost/StudentApi/student/1",
+					"protocol": "http",
+					"host": ["localhost"],
+					"path": ["StudentApi", "student", "1"]
+				}
+			}
+		},
+		{
+			"name": "Get Final Grades and Status",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost/StudentApi/grades",
+					"protocol": "http",
+					"host": ["localhost"],
+					"path": ["StudentApi", "grades"]
+				}
+			}
+		}
+	]
+}
