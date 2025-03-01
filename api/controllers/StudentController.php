@@ -30,7 +30,7 @@ class StudentController {
             return;
         }
         $this->studentRepository->AddStudent($studentData['StudentName'], $studentData['MidtermScore'], $studentData['FinalScore']);
-        echo "✅ Student Added Successfully";
+        echo " Student Added Successfully";
     }
 
     public function UpdateStudent($studentData): void {
@@ -40,7 +40,7 @@ class StudentController {
         }
         $updatedStudent = $this->studentRepository->UpdateStudent($studentData['StudentId'], $studentData['MidtermScore'], $studentData['FinalScore']);
         if ($updatedStudent) {
-            echo "✅ Student Updated Successfully";
+            echo " Student Updated Successfully";
         } else {
             echo json_encode(["error" => "Student not found"]);
         }
@@ -49,7 +49,7 @@ class StudentController {
     public function DeleteStudent(int $id): void {
         $deleted = $this->studentRepository->DeleteStudent($id);
         if ($deleted) {
-            echo "✅ Student Deleted Successfully";
+            echo "Student Deleted Successfully";
         } else {
             echo json_encode(["error" => "Student not found"]);
         }
