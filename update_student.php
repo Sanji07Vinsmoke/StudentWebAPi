@@ -17,7 +17,7 @@ $checkStmt->execute([':StudentId' => $StudentId]);
 $student = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$student) {
-    echo "⚠️ No student found with ID: $StudentId";
+    echo "No student found with ID: $StudentId";
     exit;
 }
 
@@ -48,5 +48,5 @@ $updateStmt->execute([
     ':StudentId' => $StudentId
 ]);
 
-echo "✅ Student with ID $StudentId has been updated successfully!";
+echo "Student with ID $StudentId has been updated successfully!";
 
