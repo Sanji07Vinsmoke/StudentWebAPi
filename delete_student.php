@@ -20,5 +20,5 @@ $deleteSql = "DELETE FROM student WHERE STUD_ID = :StudentId";
 $deleteStmt = $pdo->prepare($deleteSql);
 $deleteStmt->execute([':StudentId' => $StudentId]);
 
-echo "✅ Student with ID $StudentId has been deleted successfully!";
+echo "Student with ID $StudentId has been deleted successfully!";
 
