@@ -30,4 +30,4 @@ $stmt->execute([
     ':Status' => $student->Status
 ]);
 
-echo "✅ Student added successfully!";
+echo "Student added successfully!";
