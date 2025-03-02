@@ -1,7 +1,7 @@
 <?php
 
 interface StudentRepositoryInterface {
-    public function AddStudent($StudentName, $MidtermScore, $FinalScore);
+    public function AddStudent(Student $student); 
     public function GetAllStudents();
     public function GetStudentById($StudentId);
     public function UpdateStudent($StudentId, $MidtermScore, $FinalScore);

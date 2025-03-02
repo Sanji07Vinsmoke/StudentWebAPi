@@ -13,47 +13,30 @@ class Router {
 
         $request_method = $_SERVER['REQUEST_METHOD'];
         $input = json_decode(file_get_contents('php://input'), true);
-        $uri = explode('/', trim($_SERVER['REQUEST_URI'], '/')); // Get URL segments
-        $studentId = isset($uri[2]) ? (int) $uri[2] : null; // Extract student ID from URL
+        $uri = explode('/', trim($_SERVER['REQUEST_URI'], '/')); 
+        $studentId = isset($uri[2]) ? (int) $uri[2] : null; 
 
         switch ($route) {
-            case 'student': // Changed from 'students' to 'student'
+            case 'student':
                 if ($request_method === 'GET') {
-                    if ($studentId) {
-                        $student = $this->repository->GetStudentById($studentId);
-                        echo json_encode($student ?: ["error" => "Student not found"]);
-                    } else {
-                        echo json_encode($this->repository->GetAllStudents());
-                    }
-                } elseif ($request_method === 'POST') {
-                    if (!isset($input['StudentName'], $input['MidtermScore'], $input['FinalScore'])) {
-                        http_response_code(400);
-                        echo json_encode(["error" => "Missing required fields"]);
-                        return;
-                    }
-                    $student = $this->repository->AddStudent($input['StudentName'], $input['MidtermScore'], $input['FinalScore']);
-                    echo json_encode($student);
-                } elseif ($request_method === 'PUT' && $studentId) {
-                    if (!isset($input['MidtermScore'], $input['FinalScore'])) {
-                        http_response_code(400);
-                        echo json_encode(["error" => "Missing required fields"]);
-                        return;
-                    }
-                    $student = $this->repository->UpdateStudent($studentId, $input['MidtermScore'], $input['FinalScore']);
-                    echo json_encode($student);
+                    echo json_encode($studentId ? $this->repository->GetStudentById($studentId) ?? ["error" => "Student not found"] : $this->repository->GetAllStudents());
+                } elseif ($request_method === 'POST' && isset($input['StudentName'], $input['MidtermScore'], $input['FinalScore'])) {
+                    echo json_encode($this->repository->AddStudent($input['StudentName'], $input['MidtermScore'], $input['FinalScore']));
+                } elseif ($request_method === 'PUT' && $studentId && isset($input['MidtermScore'], $input['FinalScore'])) {
+                    echo json_encode($this->repository->UpdateStudent($studentId, $input['MidtermScore'], $input['FinalScore']));
                 } elseif ($request_method === 'DELETE' && $studentId) {
-                    $deleted = $this->repository->DeleteStudent($studentId);
-                    echo json_encode(["message" => $deleted ? "Student deleted" : "Student not found"]);
+                    echo json_encode(["message" => $this->repository->DeleteStudent($studentId) ? "Student deleted" : "Student not found"]);
                 } else {
-                    http_response_code(405);
-                    echo json_encode(["error" => "Method Not Allowed"]);
+                    http_response_code($studentId || $request_method === 'POST' ? 400 : 405);
+                    echo json_encode(["error" => $studentId ? "Missing required fields" : "Method Not Allowed"]);
                 }
                 break;
-
+            
             default:
                 http_response_code(404);
                 echo json_encode(["error" => "Invalid API request"]);
         }
+        
     }
 }
 
