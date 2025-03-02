@@ -8,7 +8,7 @@ class Student {
     public $FinalGrade;
     public $Status;
 
-    public function __construct($StudentId, $StudentName, $MidtermScore, $FinalScore, $FinalGrade, $Status) {
+    public function __construct($StudentId = NULL, $StudentName, $MidtermScore, $FinalScore, $FinalGrade = NULL, $Status = NULL) {
         $this->StudentId = $StudentId;
         $this->StudentName = $StudentName;
         $this->MidtermScore = $MidtermScore;
@@ -16,4 +16,5 @@ class Student {
         $this->FinalGrade = $FinalGrade;
         $this->Status = $Status;
     }
+    
 }
