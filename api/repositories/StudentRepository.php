@@ -38,7 +38,7 @@ class StudentRepository implements StudentRepositoryInterface {
 
     public function GetAllStudents() {
         return array_map(fn($s) => (array) $this->service->CalculateFinalGrade(new Student(...array_values($s))),
-                         $this->pdo->query("SELECT * FROM student")->fetchAll(PDO::FETCH_ASSOC));
+                        $this->pdo->query("SELECT * FROM student")->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function GetStudentById($id) {
