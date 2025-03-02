@@ -1,0 +1,82 @@
+{
+	"info": {
+		"_postman_id": "34fe3f74-f057-469a-8c48-00cc4047b314",
+		"name": "Student Grade API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "42703672"
+	},
+	"item": [
+		{
+			"name": "Add Student",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"StudentName\": \"John Doe\",\n    \"MidtermScore\": 85,\n    \"FinalScore\": 90\n}"
+				},
+				"url": "http://localhost/StudentApi/student"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve All Students",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost/StudentApi/student"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Single Student",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost/StudentApi/student/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Student Scores",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"MidtermScore\": 88,\n    \"FinalScore\": 92\n}"
+				},
+				"url": "http://localhost/StudentApi/student/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Student",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost/StudentApi/student/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Final Grades and Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost/StudentApi/grades"
+			},
+			"response": []
+		}
+	]
+}
