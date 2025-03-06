@@ -1,42 +1,84 @@
 <?php
 require_once __DIR__ . '/../repositories/StudentRepository.php';
+require_once __DIR__ . '/../controllers/StudentController.php';
 
 class Router {
-    private $repository;
+    private array $routes = [];
 
-    public function __construct() {
-        $this->repository = new StudentRepository();
+    public function __construct(){
+        $this->defineRoutes();
     }
 
-    public function HandleRequest($route) {
-        header('Content-Type: application/json');
+    private function defineRoutes(){
+        $this->routes = [
+            'GET' => [
+                'student' => [StudentController::class, 'GetAllStudents'],
+                'student/{id}' => [StudentController::class, 'GetStudentById'],
+            ],
+            'POST' => [
+                'student' => [StudentController::class, 'AddStudent'],
+            ],
+            'PUT' => [
+                'student/{id}' => [StudentController::class, 'UpdateStudent'],
+            ],
+            'DELETE' => [
+                'student/{id}' => [StudentController::class, 'DeleteStudent'],
+            ],
+        ];
+    }
 
-        $request_method = $_SERVER['REQUEST_METHOD'];
-        $input = json_decode(file_get_contents('php://input'), true);
-        $uri = explode('/', trim($_SERVER['REQUEST_URI'], '/')); 
-        $studentId = isset($uri[2]) ? (int) $uri[2] : null; 
+    public function handleRequest(){
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        $requestUri = $this->getProcessedUri();
 
-        switch ($route) {
-            case 'student':
-                if ($request_method === 'GET') {
-                    echo json_encode($studentId ? $this->repository->GetStudentById($studentId) ?? ["error" => "Student not found"] : $this->repository->GetAllStudents());
-                } elseif ($request_method === 'POST' && isset($input['StudentName'], $input['MidtermScore'], $input['FinalScore'])) {
-                    echo json_encode($this->repository->AddStudent($input['StudentName'], $input['MidtermScore'], $input['FinalScore']));
-                } elseif ($request_method === 'PUT' && $studentId && isset($input['MidtermScore'], $input['FinalScore'])) {
-                    echo json_encode($this->repository->UpdateStudent($studentId, $input['MidtermScore'], $input['FinalScore']));
-                } elseif ($request_method === 'DELETE' && $studentId) {
-                    echo json_encode(["message" => $this->repository->DeleteStudent($studentId) ? "Student deleted" : "Student not found"]);
-                } else {
-                    http_response_code($studentId || $request_method === 'POST' ? 400 : 405);
-                    echo json_encode(["error" => $studentId ? "Missing required fields" : "Method Not Allowed"]);
-                }
-                break;
-            
-            default:
-                http_response_code(404);
-                echo json_encode(["error" => "Invalid API request"]);
+        if (!isset($this->routes[$requestMethod])){
+            $this->sendNotFound();
+            return;
         }
-        
-    }
-}
 
+        foreach ($this->routes[$requestMethod] as $route => $handler){
+            $pattern = $this->convertToRegex($route);
+
+            if (preg_match($pattern, $requestUri, $matches)){
+                array_shift($matches);
+
+                if ($requestMethod === 'POST' || $requestMethod === 'PUT'){
+                    $requestData = $this->getRequestData();
+                    $this->dispatch($handler, array_merge([$requestData], $matches));
+                } else {
+                    $this->dispatch($handler, $matches);
+                }
+                return;
+            }
+        }
+        $this->sendNotFound();
+    }
+
+    private function getProcessedUri(): string {
+        $requestUri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        $scriptName = dirname($_SERVER["SCRIPT_NAME"]);
+        return trim(str_replace($scriptName, "", $requestUri), "/");
+    }
+
+    private function convertToRegex(string $route): string {
+        $pattern = preg_replace('/\{(\w+)\}/', '(\\d+)', $route); 
+        return '/^' . str_replace('/', '\/', $pattern) . '$/';
+    }
+
+    private function getRequestData(){
+        $data = json_decode(file_get_contents('php://input'), true);
+        return is_array($data) ? $data : [];
+    }
+
+    private function dispatch(array $handler, array $params){
+        [$controllerClass, $method] = $handler;
+        $controller = new $controllerClass();
+        call_user_func_array([$controller, $method], $params);
+    }
+
+    private function sendNotFound(){
+        header("HTTP/1.0 404 Not Found");
+        echo json_encode(["message" => "Route Not Found"]);
+    }
+} 
+?>

@@ -1,22 +1,46 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
+namespace Config;
+require_once __DIR__ . '../../../vendor/autoload.php';
 
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
-$host = $_ENV['DB_HOST'];
-$db = $_ENV['DB_NAME'];
-$user = $_ENV['DB_USER'];
-$pass = $_ENV['DB_PASS'];
+class Database {
+    private static $instance = null;
+    private $databaseConnection;
+    private $host;
+    private $databaseName;
+    private $userName;
+    private $password;
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    public function __construct() {
+        $this->host = $_ENV['DB_HOST'];
+        $this->databaseName = $_ENV['DB_NAME'];
+        $this->userName = $_ENV['DB_USER'];
+        $this->password = $_ENV['DB_PASS'];
+
+        try {
+            $this->conn = new PDO(
+                "mysql:host={$this->host};dbname={$this->databaseName}",
+                $this->userName,
+                $this->password,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
+            $this->conn->exec("set names utf8");
+        } catch (PDOException $exception) {
+            error_log("Database Connection Error: " . $exception->getMessage());
+            die("Database connection failed. Contact administrator.");
+        }
+    }
+
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new Database();
+        }
+        return self::$instance;
+    }
+
+    public function getConnection() {
+        return $this->conn;
+    }
 }
-
-return $pdo;
