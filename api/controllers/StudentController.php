@@ -1,25 +1,20 @@
 <?php
-require_once __DIR__ . '/../repositories/StudentRepository.php';
 require_once __DIR__ . '/../services/StudentService.php';
 
 class StudentController {
-    private StudentRepository $studentRepository;
     private StudentService $studentService;
 
-    public function __construct() {
-        $this->studentRepository = new StudentRepository();
-        $this->studentService = new StudentService();
+    public function __construct(StudentService $studentService) {
+        $this->studentService = $studentService;
     }
 
     public function GetAllStudents(): void {
-        echo json_encode($this->studentRepository->GetAllStudents());
+        echo json_encode($this->studentService->GetAllStudents());
     }
 
     public function GetStudentById(int $id): void {
         try {
-            $this->studentService->ValidateStudentId($id);
-            $student = $this->studentRepository->GetStudentById($id);
-
+            $student = $this->studentService->GetStudentById($id);
             echo json_encode($student ?: ["error" => "Student not found"]);
         } catch (Exception $e) {
             echo json_encode(["error" => $e->getMessage()]);
@@ -28,8 +23,8 @@ class StudentController {
 
     public function AddStudent($data): void {
         try {
-            $student = $this->studentService->CreateStudent($data);
-            echo json_encode($this->studentRepository->AddStudent($student));
+            $student = $this->studentService->AddStudent($data);
+            echo json_encode($student);
         } catch (Exception $e) {
             echo json_encode(["error" => $e->getMessage()]);
         }
@@ -37,8 +32,8 @@ class StudentController {
 
     public function UpdateStudent($data): void {
         try {
-            $student = $this->studentService->CreateStudent($data, true);
-            echo json_encode($this->studentRepository->UpdateStudent($student));
+            $student = $this->studentService->UpdateStudent($data);
+            echo json_encode($student);
         } catch (Exception $e) {
             echo json_encode(["error" => $e->getMessage()]);
         }
@@ -46,9 +41,7 @@ class StudentController {
 
     public function DeleteStudent(int $id): void {
         try {
-            $this->studentService->ValidateStudentId($id);
-            $deleted = $this->studentRepository->DeleteStudent($id);
-
+            $deleted = $this->studentService->DeleteStudent($id);
             echo json_encode($deleted ?: ["error" => "Student not found"]);
         } catch (Exception $e) {
             echo json_encode(["error" => $e->getMessage()]);

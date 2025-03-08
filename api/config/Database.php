@@ -1,46 +1,40 @@
 <?php
 namespace Config;
-require_once __DIR__ . '../../../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
-$dotenv->load();
+require_once __DIR__ . '/../../vendor/autoload.php'; 
+
+use Dotenv\Dotenv;
+use PDO;
+use PDOException;
 
 class Database {
-    private static $instance = null;
-    private $databaseConnection;
-    private $host;
-    private $databaseName;
-    private $userName;
-    private $password;
+    private static ?PDO $conn = null;
 
-    public function __construct() {
-        $this->host = $_ENV['DB_HOST'];
-        $this->databaseName = $_ENV['DB_NAME'];
-        $this->userName = $_ENV['DB_USER'];
-        $this->password = $_ENV['DB_PASS'];
+    private function __construct() {}
 
-        try {
-            $this->conn = new PDO(
-                "mysql:host={$this->host};dbname={$this->databaseName}",
-                $this->userName,
-                $this->password,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-            $this->conn->exec("set names utf8");
-        } catch (PDOException $exception) {
-            error_log("Database Connection Error: " . $exception->getMessage());
-            die("Database connection failed. Contact administrator.");
+    public static function getConnection(): ?PDO {
+        if (self::$conn === null) {
+          
+            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+            $dotenv->safeLoad();
+
+            $host = $_ENV['DB_HOST'] ?? 'localhost';
+            $dbName = $_ENV['DB_NAME'] ?? 'student_db';
+            $username = $_ENV['DB_USER'] ?? 'root';
+            $password = $_ENV['DB_PASS'] ?? 'royadrian07';
+
+            try {
+                self::$conn = new PDO(
+                    "mysql:host=$host;dbname=$dbName;charset=utf8",
+                    $username,
+                    $password,
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+            } catch (PDOException $exception) {
+                error_log("Database Connection Error: " . $exception->getMessage());
+                die("Database connection failed. Contact administrator.");
+            }
         }
-    }
-
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new Database();
-        }
-        return self::$instance;
-    }
-
-    public function getConnection() {
-        return $this->conn;
+        return self::$conn;
     }
 }

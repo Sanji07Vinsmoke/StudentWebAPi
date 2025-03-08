@@ -3,7 +3,7 @@
         'name' => 'studentapi/studentapi',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'd8d0b002c55e904f788bbddf0d4be92ac76ce040',
+        'reference' => '737c743131d9b96e9de5742bb9b1985a6574dfd8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -31,7 +31,7 @@
         'studentapi/studentapi' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'd8d0b002c55e904f788bbddf0d4be92ac76ce040',
+            'reference' => '737c743131d9b96e9de5742bb9b1985a6574dfd8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
