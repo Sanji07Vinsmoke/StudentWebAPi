@@ -19,7 +19,7 @@ class Database {
             $dotenv->safeLoad();
 
             $host = $_ENV['DB_HOST'] ?? 'localhost';
-            $dbName = $_ENV['DB_NAME'] ?? 'student_db';
+            $dbName = $_ENV['DB_NAME'] ?? 'student_grades';
             $username = $_ENV['DB_USER'] ?? 'root';
             $password = $_ENV['DB_PASS'] ?? 'royadrian07';
 

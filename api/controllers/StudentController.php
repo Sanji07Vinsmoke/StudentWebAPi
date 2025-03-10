@@ -47,4 +47,13 @@ class StudentController {
             echo json_encode(["error" => $e->getMessage()]);
         }
     }
+
+    public function GetFinalGradeAndStatus($data): void{
+        try{
+            $student = $this->studentService->GetFinalGradeAndStatus($data);
+            echo json_encode($student);
+        } catch (Exception $e){
+            echo json_encode(["error" => $e->getMessage()]);
+        }
+    }
 }

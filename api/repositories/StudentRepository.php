@@ -37,7 +37,6 @@ class StudentRepository implements StudentRepositoryInterface {
     
         return $this->GetStudentById($this->pdo->lastInsertId());
     }
-    
 
     public function GetAllStudents() {
         return $this->pdo->query("SELECT * FROM student")->fetchAll(PDO::FETCH_ASSOC);
@@ -62,4 +61,10 @@ class StudentRepository implements StudentRepositoryInterface {
 
         return $stmt->rowCount() ? ["message" => "Student deleted"] : ["error" => "Student not found"];
     }
+
+    public function GetFinalGradeAndStatus(){
+        $stmt = $this->pdo->query("SELECT STUD_ID, STUD_NAME, STUD_GRADE, STUD_STATUS FROM student");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }

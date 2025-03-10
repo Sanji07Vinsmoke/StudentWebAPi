@@ -86,4 +86,8 @@ class StudentService {
         $this->ValidateStudentId($id);
         return $this->repository->GetStudentById($id);
     }
+
+    public function GetFinalGradeAndStatus($data = null) {
+        return $this->repository->GetFinalGradeAndStatus();
+    }    
 }
